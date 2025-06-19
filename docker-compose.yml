@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+
+  postgres-auth:
+    image: postgres:15
+    container_name: postgres-auth
+    restart: always
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: authUser
+      POSTGRES_PASSWORD: password123!
+    ports:
+      - "5432:5432"
+    volumes:
+      - auth_pg_data:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-auth
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/authdb
+        SPRING_DATASOURCE_USERNAME: authUser
+        SPRING_DATASOURCE_PASSWORD: password123!
+        JWT_SECRET: TestSecretWillChangeItLater12324
+    networks:
+      - microservices-net
+
+volumes:
+  auth_pg_data:
+
+networks:
+  microservices-net:
+    driver: bridge
