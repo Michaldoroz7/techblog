@@ -31,10 +31,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         //Public endpoints
-                        .requestMatchers("/auth/register", "/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
 
                         //Role-Based endpoint
-                        .requestMatchers("/auth/user/**").hasAuthority("USER")
+                        .requestMatchers("/api/auth/user/**").hasAuthority("USER")
 
                         //All other with authentication
                         .anyRequest().authenticated())

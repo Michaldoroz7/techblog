@@ -6,6 +6,9 @@ spring:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
+  application:
+    name: auth-service
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,3 +17,8 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expirationMs: 3600000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discovery-server:8761/eureka/
