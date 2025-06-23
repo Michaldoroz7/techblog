@@ -17,24 +17,57 @@ services:
     networks:
       - microservices-net
 
+  postgres-article:
+    image: postgres:15
+    container_name: postgres-article
+    restart: always
+    environment:
+      POSTGRES_DB: articledb
+      POSTGRES_USER: articleUser
+      POSTGRES_PASSWORD: password123!
+
+    volumes:
+      - article_pg_data:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
   auth-service:
     build:
       context: ./auth-service
+      dockerfile: Dockerfile
     container_name: auth-service
     ports:
       - "8081:8081"
     depends_on:
       - postgres-auth
     environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/authdb
-        SPRING_DATASOURCE_USERNAME: authUser
-        SPRING_DATASOURCE_PASSWORD: password123!
-        JWT_SECRET: TestSecretWillChangeItLater12324
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/authdb
+      SPRING_DATASOURCE_USERNAME: authUser
+      SPRING_DATASOURCE_PASSWORD: password123!
+      JWT_SECRET: TestSecretWillChangeItLater12324
+    networks:
+      - microservices-net
+
+  article-service:
+    build:
+      context: ./article-service
+      dockerfile: Dockerfile
+    container_name: article-service
+    ports:
+      - "8082:8081"
+    depends_on:
+      - postgres-article
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-article:5432/articledb
+      SPRING_DATASOURCE_USERNAME: articleUser
+      SPRING_DATASOURCE_PASSWORD: password123!
+      JWT_SECRET: TestSecretWillChangeItLater12324
     networks:
       - microservices-net
 
 volumes:
   auth_pg_data:
+  article_pg_data:
 
 networks:
   microservices-net:

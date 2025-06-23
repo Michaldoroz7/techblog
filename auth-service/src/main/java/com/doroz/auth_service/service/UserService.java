@@ -5,7 +5,6 @@ import com.doroz.auth_service.model.User;
 import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
 import com.doroz.auth_service.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

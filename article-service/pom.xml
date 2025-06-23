@@ -6,13 +6,14 @@
 		<groupId>com.doroz</groupId>
 		<artifactId>techblog</artifactId>
 		<version>1.0.0</version>
-		<relativePath>../pom.xml</relativePath>	</parent>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
 
-	<artifactId>auth-service</artifactId>
+	<artifactId>article-service</artifactId>
 
 	<version>0.0.1-SNAPSHOT</version>
-	<name>auth-service</name>
-	<description>authorization service for TechBlog</description>
+	<name>article-service</name>
+	<description>Articles service for TechBlog</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -37,8 +35,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody UserRequest userRequest) {
-        Optional<UserResponse> createdUser = userService.registerUser(userRequest);
-        return ResponseEntity.of(createdUser);
+        return ResponseEntity.of(userService.registerUser(userRequest));
     }
 
     @PostMapping("/login")
