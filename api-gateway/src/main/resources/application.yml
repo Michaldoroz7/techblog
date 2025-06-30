@@ -34,4 +34,3 @@ jwt:
   secret: ${JWT_SECRET}
   public-get-paths: /article-service/api/articles
   public-post-paths: /auth-service/api/auth/register,/auth-service/api/auth/login
-ó
