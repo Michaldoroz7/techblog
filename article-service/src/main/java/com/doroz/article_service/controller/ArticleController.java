@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -21,8 +20,9 @@ public class ArticleController {
     }
 
     @PostMapping
-    public ResponseEntity<ArticleResponse> createArticle(@Valid @RequestBody ArticleRequest articleRequest, Principal principal) {
-        String username = principal.getName();
+    public ResponseEntity<ArticleResponse> createArticle(@Valid @RequestBody ArticleRequest articleRequest,
+                                                         @RequestHeader(value = "X-Username", required = false) String username) {
+
         return ResponseEntity.of(articleService.createArticle(articleRequest, username));
     }
 
@@ -42,8 +42,7 @@ public class ArticleController {
     }
 
     @GetMapping("/author")
-    public ResponseEntity<List<ArticleResponse>> getArticlesByAuthor(Principal principal) {
-        String username = principal.getName();
+    public ResponseEntity<List<ArticleResponse>> getArticlesByAuthor(@RequestHeader(value = "X-Username", required = false) String username) {
         List<ArticleResponse> articles = articleService.getArticlesByAuthor(username);
         return ResponseEntity.ok(articles);
     }

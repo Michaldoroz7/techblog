@@ -45,6 +45,8 @@ public class UserController {
         UserDetails user = (UserDetails) auth.getPrincipal();
         String token = jwtUtils.generateToken(user);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok()
+                .header("X-Username", user.getUsername())
+                .body(new JwtResponse(token));
     }
 }

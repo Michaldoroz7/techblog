@@ -30,8 +30,8 @@ eureka:
   instance:
     prefer-ip-address: true
 
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.http.server.reactive: DEBUG
-    reactor.netty.http.client: DEBUG
+jwt:
+  secret: ${JWT_SECRET}
+  public-get-paths: /article-service/api/articles
+  public-post-paths: /auth-service/api/auth/register,/auth-service/api/auth/login
+ó
