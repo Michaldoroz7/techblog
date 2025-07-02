@@ -27,6 +27,10 @@ public class SecurityConfig {
 
                         .pathMatchers(HttpMethod.GET, "/article-service/api/articles").permitAll()
 
+                        .pathMatchers(HttpMethod.POST, "/comment-service/api/comments").authenticated()
+                        .pathMatchers(HttpMethod.GET, "/comment-service/api/comments/**").permitAll()
+
+
                         .anyExchange().authenticated()
                 )
                 .addFilterBefore(jwtFilter, SecurityWebFiltersOrder.AUTHENTICATION)

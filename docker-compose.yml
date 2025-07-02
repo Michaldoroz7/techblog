@@ -56,6 +56,21 @@ services:
     networks:
       - microservices-net
 
+  postgres-comment:
+    image: postgres:15
+    container_name: postgres-comment
+    restart: always
+    environment:
+      POSTGRES_DB: commentdb
+      POSTGRES_USER: commentUser
+      POSTGRES_PASSWORD: password123!
+    ports:
+      - "5433:5432"
+    volumes:
+      - comment_pg_data:/var/lib/postgresql/data
+    networks:
+      - microservices-net
+
   auth-service:
     build:
       context: ./auth-service
@@ -79,7 +94,7 @@ services:
       dockerfile: Dockerfile
     container_name: article-service
     ports:
-      - "8082:8081"
+      - "8082:8082"
     depends_on:
       - postgres-article
     environment:
@@ -89,9 +104,26 @@ services:
     networks:
       - microservices-net
 
+  comment-service:
+    build:
+      context: ./comment-service
+      dockerfile: Dockerfile
+    container_name: comment-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - postgres-comment
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-comment:5432/commentdb
+      SPRING_DATASOURCE_USERNAME: commentUser
+      SPRING_DATASOURCE_PASSWORD: password123!
+    networks:
+      - microservices-net
+
 volumes:
   auth_pg_data:
   article_pg_data:
+  comment_pg_data:
 
 networks:
   microservices-net:

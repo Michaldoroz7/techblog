@@ -23,6 +23,11 @@ spring:
           predicates:
             - Path=/article-service/**
 
+        - id: comment-service
+          uri: lb://comment-service
+          predicates:
+            - Path=/comment-service/**
+
 eureka:
   client:
     service-url:
@@ -32,5 +37,5 @@ eureka:
 
 jwt:
   secret: ${JWT_SECRET}
-  public-get-paths: /article-service/api/articles
+  public-get-paths: /article-service/api/articles, /comment-service/api/comments
   public-post-paths: /auth-service/api/auth/register,/auth-service/api/auth/login
