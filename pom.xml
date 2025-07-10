@@ -15,6 +15,7 @@
         <module>api-gateway</module>
         <module>discovery-server</module>
         <module>comment-service</module>
+        <module>shared-events</module>
     </modules>
 
     <properties>

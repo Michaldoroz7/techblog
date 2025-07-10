@@ -8,11 +8,18 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   application:
     name: article-service
-
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: com.doroz.events
 
 eureka:
   client:

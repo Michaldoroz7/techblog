@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,6 +25,8 @@ public class ArticleResponse {
     private String authorName;
 
     private Instant createdAt;
+
+    private List<CommentResponse> comments;
 
     public static ArticleResponse mapArticleToResponse(Article article) {
         return ArticleResponse.builder()

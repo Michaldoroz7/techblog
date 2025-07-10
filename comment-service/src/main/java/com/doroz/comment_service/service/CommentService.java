@@ -1,9 +1,11 @@
 package com.doroz.comment_service.service;
 
+import com.doroz.comment_service.event.CommentEventProducer;
 import com.doroz.comment_service.model.Comment;
 import com.doroz.comment_service.model.CommentRequest;
 import com.doroz.comment_service.model.CommentResponse;
 import com.doroz.comment_service.repository.CommentRepository;
+import com.doroz.events.CommentCreatedEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,9 +15,11 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository repository;
+    private final CommentEventProducer producer;
 
-    public CommentService(CommentRepository repository) {
+    public CommentService(CommentRepository repository, CommentEventProducer producer) {
         this.repository = repository;
+        this.producer = producer;
     }
 
     public CommentResponse create(CommentRequest request, String username) {
@@ -25,6 +29,15 @@ public class CommentService {
                 .authorUsername(username)
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        CommentCreatedEvent event = CommentCreatedEvent.builder()
+                .articleId(comment.getArticleId())
+                .content(comment.getContent())
+                .authorUsername(comment.getAuthorUsername())
+                .createdAt(comment.getCreatedAt())
+                .build();
+
+        producer.send(event);
 
         Comment saved = repository.save(comment);
         return toDto(saved);

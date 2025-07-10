@@ -20,10 +20,7 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<CommentResponse> create(
-            @Valid @RequestBody CommentRequest request,
-            @RequestHeader("X-Username") String username
-    ) {
+    public ResponseEntity<CommentResponse> create(@Valid @RequestBody CommentRequest request, @RequestHeader("X-Username") String username) {
         return ResponseEntity.ok(service.create(request, username));
     }
 

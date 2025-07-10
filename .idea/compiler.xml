@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
+        <module name="shared-events" />
         <module name="auth-service" />
         <module name="comment-service" />
         <module name="discovery-server" />
