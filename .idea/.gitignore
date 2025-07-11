@@ -1,5 +1,44 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Environment-dependent path to Maven home directory
-/mavenHomeManager.xml
+# Java / Spring Boot
+target/
+*.log
+*.class
+*.jar
+*.war
+*.iml
+/.idea/
+/out/
+/bin/
+
+# Maven
+.mvn/
+.settings/
+dependency-reduced-pom.xml
+release.properties
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.next
+release.properties
+
+# IntelliJ IDEA
+*.iws
+*.ipr
+*.iml
+.idea/
+
+# VS Code
+.vscode/
+
+# Node / React
+node_modules/
+build/
+dist/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker
+*.env
+docker-compose.override.yml
+

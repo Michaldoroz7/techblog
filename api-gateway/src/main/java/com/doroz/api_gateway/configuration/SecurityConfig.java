@@ -25,6 +25,8 @@ public class SecurityConfig {
                         .pathMatchers("/auth-service/api/auth/register").permitAll()
                         .pathMatchers("/auth-service/api/auth/login").permitAll()
 
+                        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
                         .pathMatchers(HttpMethod.GET, "/article-service/api/articles").permitAll()
 
                         .pathMatchers(HttpMethod.POST, "/comment-service/api/comments").authenticated()

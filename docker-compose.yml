@@ -22,8 +22,8 @@ services:
     depends_on:
       - discovery-server
     environment:
-      JWT_SECRET: my-very-long-and-secure-secret-key-that-is-at-least-32chars
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka
+      JWT_SECRET: ${JWT_SECRET}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     networks:
       - microservices-net
 
@@ -32,9 +32,9 @@ services:
     container_name: postgres-auth
     restart: always
     environment:
-      POSTGRES_DB: authdb
-      POSTGRES_USER: authUser
-      POSTGRES_PASSWORD: password123!
+      POSTGRES_DB: ${POSTGRES_AUTH_DB}
+      POSTGRES_USER: ${POSTGRES_AUTH_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_AUTH_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -47,9 +47,9 @@ services:
     container_name: postgres-article
     restart: always
     environment:
-      POSTGRES_DB: articledb
-      POSTGRES_USER: articleUser
-      POSTGRES_PASSWORD: password123!
+      POSTGRES_DB: ${POSTGRES_ARTICLE_DB}
+      POSTGRES_USER: ${POSTGRES_ARTICLE_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_ARTICLE_PASSWORD}
 
     volumes:
       - article_pg_data:/var/lib/postgresql/data
@@ -61,9 +61,9 @@ services:
     container_name: postgres-comment
     restart: always
     environment:
-      POSTGRES_DB: commentdb
-      POSTGRES_USER: commentUser
-      POSTGRES_PASSWORD: password123!
+      POSTGRES_DB: ${POSTGRES_COMMENT_DB}
+      POSTGRES_USER: ${POSTGRES_COMMENT_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_COMMENT_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -81,10 +81,10 @@ services:
     depends_on:
       - postgres-auth
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/authdb
-      SPRING_DATASOURCE_USERNAME: authUser
-      SPRING_DATASOURCE_PASSWORD: password123!
-      JWT_SECRET: my-very-long-and-secure-secret-key-that-is-at-least-32chars
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/${POSTGRES_AUTH_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_AUTH_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_AUTH_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     networks:
       - microservices-net
 
@@ -98,9 +98,9 @@ services:
     depends_on:
       - postgres-article
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-article:5432/articledb
-      SPRING_DATASOURCE_USERNAME: articleUser
-      SPRING_DATASOURCE_PASSWORD: password123!
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-article:5432/${POSTGRES_ARTICLE_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_ARTICLE_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_ARTICLE_PASSWORD}
     networks:
       - microservices-net
 
@@ -114,9 +114,9 @@ services:
     depends_on:
       - postgres-comment
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-comment:5432/commentdb
-      SPRING_DATASOURCE_USERNAME: commentUser
-      SPRING_DATASOURCE_PASSWORD: password123!
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-comment:5432/${POSTGRES_COMMENT_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_COMMENT_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGREs_COMMENT_PASSWORD}
     networks:
       - microservices-net
 

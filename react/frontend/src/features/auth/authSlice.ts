@@ -41,7 +41,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async (data: { username: string, email: string; password: string }, thunkAPI) => {
     try {
-      const response = await axios.post('/auth-service/api/auth/register', data);
+      const response = await axios.post('http://localhost:8080/auth-service/api/auth/register', data);
       return response.data;
     } catch (err: any) {
       return thunkAPI.rejectWithValue(err.response?.data?.message || 'Błąd rejestracji');

@@ -37,6 +37,10 @@ public class JwtFilter implements WebFilter {
         String path = exchange.getRequest().getPath().value();
         HttpMethod method = exchange.getRequest().getMethod();
 
+        if (method == HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
+
         if (isPublicPath(method, path)) {
             return chain.filter(exchange);
         }
