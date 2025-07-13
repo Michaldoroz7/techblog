@@ -19,7 +19,6 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      console.log("Token: " + token)
       const response = await axios.get('http://localhost:8080/auth-service/api/auth/me', {
         headers: {
           Authorization: `Bearer ${token}`,
