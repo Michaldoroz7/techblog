@@ -21,13 +21,11 @@ public class JwtUtils {
     private int expirationMs;
 
     public String generateToken(UserDetails userDetails) {
-        String compact = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
                 .compact();
-        System.out.println("JWT secret used: " + compact);
-        return compact;
     }
 }

@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     if (justLoggedIn) {
       const timer = setTimeout(() => {
-        navigate('/home');
+        navigate('/dashboard');
       }, 1500); 
       return () => clearTimeout(timer);
     }

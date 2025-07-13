@@ -7,15 +7,13 @@ import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
 import com.doroz.auth_service.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -47,6 +45,16 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .header("X-Username", user.getUsername())
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "X-Username")
                 .body(new JwtResponse(token));
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+        System.out.println("Użytkownik wywołał /me jako: " + authentication.getName());
+
+        return ResponseEntity.of(userService.getByUsername(authentication.getName())
+                .map(UserResponse::mapUserToResponse));
+    }
+
 }

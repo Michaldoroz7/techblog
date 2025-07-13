@@ -34,6 +34,7 @@ public class JwtFilter implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        System.out.println("JwtFilter aktywowany dla: " + exchange.getRequest().getURI());
         String path = exchange.getRequest().getPath().value();
         HttpMethod method = exchange.getRequest().getMethod();
 
@@ -66,6 +67,7 @@ public class JwtFilter implements WebFilter {
             ServerWebExchange mutatedExchange = exchange.mutate()
                     .request(exchange.getRequest().mutate()
                             .header("X-Username", username)
+                            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                             .build())
                     .build();
 
