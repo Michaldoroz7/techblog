@@ -1,11 +1,11 @@
 import { Col, Container, Row } from "react-bootstrap";
 import UserInfoCard from "../components/UserInfoCard";
-import UserArticlesCard from "../components/UserArticlesCard";
+import MyArticlesList from "../components/MyArticlesList";
 
 const UserProfilePage = () => {
   return (
     <Container>
-      <Row>
+      <Row className="my-4">
         <Col md={8}>
           <UserInfoCard />
         </Col>
@@ -13,9 +13,9 @@ const UserProfilePage = () => {
           <UserInfoCard />
         </Col>
       </Row>
-      <Row>
+      <Row className="my-4">
         <Col md={12}>
-          <UserArticlesCard />
+          <MyArticlesList />
         </Col>
       </Row>
     </Container>

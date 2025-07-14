@@ -5,7 +5,7 @@ export interface Article {
   summary: string;
   content: string;
   category: string; 
-  author: string;
+  authorName: string;
   createdAt: string;
   comments: Comment[];
 }
