@@ -46,6 +46,14 @@ const ArticleCard = ({
           </small>
         </div>
       </Card.Body>
+      <Card.Footer className="d-flex justify-content-between align-items-center bg-light">
+        <small className="text-muted">
+          💬{" "}
+          {article.comments && article.comments.length > 0 && (
+            <span>💬 {article.comments.length}</span>
+          )}
+        </small>
+      </Card.Footer>
     </Card>
   );
 };

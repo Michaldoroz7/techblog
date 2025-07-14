@@ -2,6 +2,7 @@ package com.doroz.comment_service.service;
 
 import com.doroz.comment_service.event.CommentEventProducer;
 import com.doroz.comment_service.model.Comment;
+import com.doroz.comment_service.model.CommentIdsRequest;
 import com.doroz.comment_service.model.CommentRequest;
 import com.doroz.comment_service.model.CommentResponse;
 import com.doroz.comment_service.repository.CommentRepository;
@@ -32,9 +33,7 @@ public class CommentService {
 
         CommentCreatedEvent event = CommentCreatedEvent.builder()
                 .articleId(comment.getArticleId())
-                .content(comment.getContent())
-                .authorUsername(comment.getAuthorUsername())
-                .createdAt(comment.getCreatedAt())
+                .commentId(comment.getId())
                 .build();
 
         producer.send(event);
@@ -46,6 +45,12 @@ public class CommentService {
     public List<CommentResponse> getByArticle(Long articleId) {
         return repository.findByArticleId(articleId)
                 .stream()
+                .map(this::toDto)
+                .toList();
+    }
+
+    public List<CommentResponse> getByIds(CommentIdsRequest commentIdsRequest) {
+        return repository.findAllById(commentIdsRequest.getIds()).stream()
                 .map(this::toDto)
                 .toList();
     }

@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "articles")
@@ -33,6 +35,9 @@ public class Article {
     private String authorName;
 
     private Instant createdAt;
+
+    @ElementCollection
+    private List<Long> commentIds = new ArrayList<>();
 
     public static Article mapRequestToArticle(ArticleRequest request) {
         return Article.builder()

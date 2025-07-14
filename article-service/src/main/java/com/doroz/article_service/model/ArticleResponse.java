@@ -14,6 +14,8 @@ import java.util.List;
 @Builder
 public class ArticleResponse {
 
+    private Long id;
+
     private String title;
 
     private String summary;
@@ -26,16 +28,18 @@ public class ArticleResponse {
 
     private Instant createdAt;
 
-    private List<CommentResponse> comments;
+    private List<Long> commentsIds;
 
     public static ArticleResponse mapArticleToResponse(Article article) {
         return ArticleResponse.builder()
+                .id(article.getId())
                 .title(article.getTitle())
                 .summary(article.getSummary())
                 .content(article.getContent())
                 .category(article.getCategory())
                 .authorName(article.getAuthorName())
                 .createdAt(article.getCreatedAt())
+                .commentsIds(article.getCommentIds())
                 .build();
     }
 }

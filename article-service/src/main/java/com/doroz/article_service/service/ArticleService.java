@@ -8,6 +8,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class ArticleService {
         Article article = Article.mapRequestToArticle(articleRequest);
         article.setAuthorName(authorUsername);
         article.setCreatedAt(Instant.now());
+        article.setCommentIds(new ArrayList<>());
         articleRepository.save(article);
         return Optional.of(ArticleResponse.mapArticleToResponse(article));
     }

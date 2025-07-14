@@ -1,5 +1,6 @@
 package com.doroz.comment_service.controller;
 
+import com.doroz.comment_service.model.CommentIdsRequest;
 import com.doroz.comment_service.model.CommentRequest;
 import com.doroz.comment_service.model.CommentResponse;
 import com.doroz.comment_service.service.CommentService;
@@ -27,5 +28,10 @@ public class CommentController {
     @GetMapping("/article/{articleId}")
     public ResponseEntity<List<CommentResponse>> getByArticle(@PathVariable Long articleId) {
         return ResponseEntity.ok(service.getByArticle(articleId));
+    }
+
+    @GetMapping("/article/by-ids")
+    public ResponseEntity<List<CommentResponse>> getByIds(@RequestBody CommentIdsRequest commentIdsRequest) {
+        return ResponseEntity.ok(service.getByIds(commentIdsRequest));
     }
 }

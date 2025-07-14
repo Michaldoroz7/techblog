@@ -9,18 +9,20 @@ import ArticleDetailsCanvas from "./ArticleDetailsCanvas";
 
 const MyArticlesList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { articles, loading, error } = useSelector((state: RootState) => state.article);
-    const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-    const [showDetails, setShowDetails] = useState(false);
+  const { articles, loading, error } = useSelector(
+    (state: RootState) => state.article
+  );
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     dispatch(fetchArticle());
   }, [dispatch]);
 
-   const handleCardClick = (article: Article) => {
-      setSelectedArticle(article);
-      setShowDetails(true);
-    };
+  const handleCardClick = (article: Article) => {
+    setSelectedArticle(article);
+    setShowDetails(true);
+  };
 
   if (loading) return <Spinner animation="border" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
