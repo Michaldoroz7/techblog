@@ -11,7 +11,12 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
-import { createComment, fetchCommentsByIds } from "../features/commentSlice";
+import {
+  createComment,
+  deleteComment,
+  fetchCommentsByIds,
+} from "../features/commentSlice";
+import { fetchArticleById } from "../features/articleSlice";
 
 interface Props {
   show: boolean;
@@ -25,15 +30,19 @@ const ArticleDetailsCanvas = ({ show, onHide, article }: Props) => {
   const { comments, loading } = useSelector(
     (state: RootState) => state.comment
   );
+  const [commentLoading, setCommentLoading] = useState(false);
+  const loggedUsername = localStorage.getItem("username");
 
   useEffect(() => {
-    if (article?.comments && article.comments.length > 0) {
-      dispatch(fetchCommentsByIds(article.comments));
+    if (article?.commentsIds && article.commentsIds.length > 0) {
+      dispatch(fetchCommentsByIds(article.commentsIds));
     }
   }, [dispatch, article]);
 
   const handleAddComment = async () => {
     if (!article || newComment.trim() === "") return;
+
+    setCommentLoading(true);
 
     await dispatch(
       createComment({
@@ -42,14 +51,32 @@ const ArticleDetailsCanvas = ({ show, onHide, article }: Props) => {
       })
     );
 
-    if (article.comments) {
-      dispatch(fetchCommentsByIds(article.comments));
+    setNewComment("");
+
+    const updatedArticle = await dispatch(
+      fetchArticleById(article.id)
+    ).unwrap();
+
+    if (updatedArticle.commentsIds) {
+      await dispatch(fetchCommentsByIds(updatedArticle.commentsIds));
     }
 
-    setNewComment("");
+    setCommentLoading(false);
   };
 
-  // Jeśli brak artykułu, nic nie renderuj
+  const handleDeleteComment = async (commentId: number) => {
+    if (!article) return;
+    setCommentLoading(true);
+    await dispatch(deleteComment(commentId));
+    const updatedArticle = await dispatch(
+      fetchArticleById(article.id)
+    ).unwrap();
+    if (updatedArticle.commentsIds) {
+      await dispatch(fetchCommentsByIds(updatedArticle.commentsIds));
+    }
+    setCommentLoading(false);
+  };
+
   if (!article) return null;
 
   return (
@@ -99,7 +126,11 @@ const ArticleDetailsCanvas = ({ show, onHide, article }: Props) => {
 
           <h5 className="mb-3">💬 Komentarze ({comments.length})</h5>
 
-          {loading ? (
+          {commentLoading ? (
+            <div className="d-flex justify-content-center my-2">
+              <Spinner animation="border" size="sm" />
+            </div>
+          ) : loading ? (
             <Spinner animation="border" size="sm" />
           ) : comments.length === 0 ? (
             <p className="text-muted">Brak komentarzy.</p>
@@ -112,6 +143,16 @@ const ArticleDetailsCanvas = ({ show, onHide, article }: Props) => {
                     {new Date(comment.createdAt).toLocaleString("pl-PL")}
                   </span>
                   <div>{comment.content}</div>
+                  {comment.authorUsername === loggedUsername && (
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      X
+                    </Button>
+                  )}
                 </ListGroup.Item>
               ))}
             </ListGroup>

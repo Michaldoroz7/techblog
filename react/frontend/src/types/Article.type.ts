@@ -6,5 +6,5 @@ export interface Article {
   category: string; 
   authorName: string;
   createdAt: string;
-  comments: number[];
+  commentsIds: number[];
 }

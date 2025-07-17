@@ -30,8 +30,13 @@ public class CommentController {
         return ResponseEntity.ok(service.getByArticle(articleId));
     }
 
-    @GetMapping("/article/by-ids")
+    @PostMapping("/article/by-ids")
     public ResponseEntity<List<CommentResponse>> getByIds(@RequestBody CommentIdsRequest commentIdsRequest) {
         return ResponseEntity.ok(service.getByIds(commentIdsRequest));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id, @RequestHeader("X-Username") String username) {
+        return ResponseEntity.ok(service.deleteComment(id, username));
     }
 }

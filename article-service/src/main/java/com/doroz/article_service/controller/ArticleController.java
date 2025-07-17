@@ -32,7 +32,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ArticleResponse> getById(@PathVariable Long id) {
+    public ResponseEntity<ArticleResponse> getById(@PathVariable("id") Long id) {
         return ResponseEntity.of(articleService.getArticleById(id));
     }
 

@@ -17,9 +17,15 @@ export const fetchCommentsByIds = createAsyncThunk(
   "comments/fetchByIds",
   async (ids: number[], thunkAPI) => {
     try {
+
+      const token = localStorage.getItem("token");
+
       const response = await axios.post(
         "http://localhost:8080/comment-service/api/comments/article/by-ids",
-        { ids }
+        { ids }, 
+        { headers: {
+          Authorization:  `Bearer ${token}`
+        }}
       );
       return response.data as Comment[];
     } catch (err: any) {
@@ -55,6 +61,28 @@ export const createComment = createAsyncThunk(
       return response.data as Comment;
     } catch (err: any) {
       return rejectWithValue(err.response?.data || 'Błąd podczas tworzenia komentarza');
+    }
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "comments/delete",
+  async (commentId: number, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(
+        `http://localhost:8080/comment-service/api/comments/${commentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return commentId;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Nie udało się usunąć komentarza"
+      );
     }
   }
 );

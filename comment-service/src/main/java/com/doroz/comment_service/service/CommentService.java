@@ -6,11 +6,13 @@ import com.doroz.comment_service.model.CommentIdsRequest;
 import com.doroz.comment_service.model.CommentRequest;
 import com.doroz.comment_service.model.CommentResponse;
 import com.doroz.comment_service.repository.CommentRepository;
-import com.doroz.events.CommentCreatedEvent;
+import com.doroz.events.CommentEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -31,14 +33,14 @@ public class CommentService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        CommentCreatedEvent event = CommentCreatedEvent.builder()
-                .articleId(comment.getArticleId())
-                .commentId(comment.getId())
+        Comment saved = repository.save(comment);
+
+        CommentEvent event = CommentEvent.builder()
+                .articleId(saved.getArticleId())
+                .commentId(saved.getId())
                 .build();
 
-        producer.send(event);
-
-        Comment saved = repository.save(comment);
+        producer.sendCreate(event);
         return toDto(saved);
     }
 
@@ -53,6 +55,28 @@ public class CommentService {
         return repository.findAllById(commentIdsRequest.getIds()).stream()
                 .map(this::toDto)
                 .toList();
+    }
+
+    public String deleteComment(Long commentId, String username) {
+        Optional<Comment> comment = repository.findById(commentId);
+
+        if (comment.isEmpty()) {
+            return "Comment doesn't exist";
+        }
+
+        if (!Objects.equals(username, comment.get().getAuthorUsername())) {
+            return "Username is different than author";
+        }
+
+        CommentEvent event = CommentEvent.builder()
+                .articleId(comment.get().getArticleId())
+                .commentId(comment.get().getId())
+                .build();
+
+        producer.sendDelete(event);
+
+        repository.deleteById(commentId);
+        return "Comment successfuly deleted";
     }
 
     private CommentResponse toDto(Comment comment) {

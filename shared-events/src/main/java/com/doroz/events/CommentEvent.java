@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentCreatedEvent {
+public class CommentEvent {
     private Long articleId;
     private Long commentId;
 }

@@ -38,7 +38,8 @@ public class ArticleService {
     }
 
     public Optional<ArticleResponse> getArticleById(Long id) {
-        return Optional.of(ArticleResponse.mapArticleToResponse(articleRepository.getReferenceById(id)));
+        return articleRepository.findById(id)
+                .map(ArticleResponse::mapArticleToResponse);
     }
 
     public String deleteArticle(Long id) {

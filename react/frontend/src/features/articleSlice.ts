@@ -55,6 +55,28 @@ export const fetchArticle = createAsyncThunk(
   }
 );
 
+export const fetchArticleById = createAsyncThunk(
+  "article/fetchArticleById",
+  async (id: number, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `http://localhost:8080/article-service/api/articles/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data as Article;
+    } catch (err: any) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Nie udało się pobrać artykułu"
+      );
+    }
+  }
+);
+
 interface CreateArticlePayload {
   title: string;
   summary: string;
@@ -129,7 +151,23 @@ const articleSlice = createSlice({
       .addCase(fetchAllArticles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-      });
+      })
+      .addCase(fetchArticleById.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(fetchArticleById.fulfilled, (state, action) => {
+      state.loading = false;
+      state.article = action.payload;
+      const idx = state.articles.findIndex(a => a.id === action.payload.id);
+      if (idx !== -1) {
+        state.articles[idx] = action.payload;
+      }
+    })
+    .addCase(fetchArticleById.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload as string;
+    });
   },
 });
 
