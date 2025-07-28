@@ -7,4 +7,5 @@ export interface Article {
   authorName: string;
   createdAt: string;
   commentsIds: number[];
+  views: number;
 }

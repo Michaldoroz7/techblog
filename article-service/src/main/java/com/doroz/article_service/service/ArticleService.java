@@ -1,9 +1,11 @@
 package com.doroz.article_service.service;
 
+import com.doroz.article_service.event.ArticleEventProducer;
 import com.doroz.article_service.model.Article;
 import com.doroz.article_service.model.ArticleRequest;
 import com.doroz.article_service.model.ArticleResponse;
 import com.doroz.article_service.repository.ArticleRepository;
+import com.doroz.events.ArticleViewsEvent;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ import java.util.stream.Collectors;
 @Service
 public class ArticleService {
 
-    private ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleEventProducer producer;
 
-    public ArticleService(ArticleRepository articleRepository) {
+    public ArticleService(ArticleRepository articleRepository, ArticleEventProducer producer) {
         this.articleRepository = articleRepository;
+        this.producer = producer;
     }
 
     public Optional<ArticleResponse> createArticle(ArticleRequest articleRequest, String authorUsername) {
@@ -27,6 +31,7 @@ public class ArticleService {
         article.setAuthorName(authorUsername);
         article.setCreatedAt(Instant.now());
         article.setCommentIds(new ArrayList<>());
+        article.setViews(0L);
         articleRepository.save(article);
         return Optional.of(ArticleResponse.mapArticleToResponse(article));
     }
@@ -38,8 +43,16 @@ public class ArticleService {
     }
 
     public Optional<ArticleResponse> getArticleById(Long id) {
-        return articleRepository.findById(id)
-                .map(ArticleResponse::mapArticleToResponse);
+        ArticleViewsEvent event = ArticleViewsEvent.builder()
+                .articleId(id)
+                .build();
+
+        producer.sendViews(event);
+
+        Optional<Article> articleResponse = articleRepository.findById(id);
+
+        return articleResponse.map(ArticleResponse::mapArticleToResponse);
+
     }
 
     public String deleteArticle(Long id) {

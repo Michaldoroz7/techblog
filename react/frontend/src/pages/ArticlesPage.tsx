@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { fetchAllArticles } from "../features/articleSlice";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Row, Col, Spinner, Alert, Button } from "react-bootstrap";
 import ArticleCard from "../components/ArticleCard";
-import AddArticleOffcanvas from "../components/AddArticleCanvas";
 import { Article } from "../types/Article.type";
-import ArticleDetailsCanvas from "../components/ArticleDetailsCanvas";
+import ArticleDetails from "../components/ArticleDetails";
+import AddArticleOffcanvas from "../components/AddArticleCanvas";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ArticlesPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,48 +15,70 @@ const ArticlesPage = () => {
     (state: RootState) => state.article
   );
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     dispatch(fetchAllArticles());
   }, [dispatch]);
 
-  const handleCardClick = (article: Article) => {
-    setSelectedArticle(article);
-    setShowDetails(true);
-  };
 
   if (loading) return <Spinner animation="border" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
   return (
-    <div>
-      <Row className="align-items-center mb-4">
-        <Col>
-          <h2 className="m-0">Wszystkie Artykuły</h2>
-        </Col>
-        <Col xs="auto">
+    <Row className="g-0">
+      <Col
+        md={4}
+        style={{
+          borderRight: "1px solid #eee",
+          minHeight: "100vh",
+          background: "#f8f9fa",
+        }}
+      >
+        <div className="d-flex justify-content-between align-items-center p-3">
+          <h4 className="mb-0">Wszystkie Artykuły</h4>
           <AddArticleOffcanvas />
-        </Col>
-      </Row>
-
-      <Row xs={1} md={2} lg={3} className="g-4">
+        </div>
+        {loading && <Spinner animation="border" />}
+        {error && <Alert variant="danger">{error}</Alert>}
         {articles.map((article) => (
-          <Col key={article.title}>
-            <ArticleCard
-              article={article}
-              onClick={() => handleCardClick(article)}
-            />
-          </Col>
+          <div
+            key={article.id}
+            onClick={() => setSelectedArticle(article)}
+            style={{ cursor: "pointer" }}
+          >
+            <ArticleCard article={article} />
+          </div>
         ))}
-      </Row>
+      </Col>
 
-      <ArticleDetailsCanvas
-        show={showDetails}
-        onHide={() => setShowDetails(false)}
-        article={selectedArticle}
-      />
-    </div>
+      <Col md={8} style={{ padding: "2rem" }}>
+        <AnimatePresence mode="wait">
+          {selectedArticle ? (
+            <motion.div
+              key={selectedArticle.id}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ArticleDetails article={selectedArticle} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="text-muted text-center"
+              style={{ marginTop: "30%" }}
+            >
+              <h5>Wybierz artykuł, aby zobaczyć szczegóły</h5>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Col>
+    </Row>
   );
 };
 

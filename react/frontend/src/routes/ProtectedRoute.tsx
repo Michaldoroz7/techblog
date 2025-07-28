@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }: Props) => {
   useEffect(() => {
     if (!token) {
       setShowAlert(true);
-      const timer = setTimeout(() => setRedirect(true), 2000); // po 2s przekieruj
+      const timer = setTimeout(() => setRedirect(true), 2000);
       return () => clearTimeout(timer);
     }
   }, [token]);

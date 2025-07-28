@@ -52,6 +52,11 @@ const ArticleCard = ({
             <span>💬 {article.commentsIds.length}</span>
           )}
         </small>
+        <small className="text-muted">
+          {article.views && (
+            <span>👁️ {article.views}</span>
+          )}
+        </small>
       </Card.Footer>
     </Card>
   );

@@ -30,6 +30,8 @@ public class ArticleResponse {
 
     private List<Long> commentsIds;
 
+    private Long views;
+
     public static ArticleResponse mapArticleToResponse(Article article) {
         return ArticleResponse.builder()
                 .id(article.getId())
@@ -40,6 +42,7 @@ public class ArticleResponse {
                 .authorName(article.getAuthorName())
                 .createdAt(article.getCreatedAt())
                 .commentsIds(article.getCommentIds())
+                .views(article.getViews())
                 .build();
     }
 }

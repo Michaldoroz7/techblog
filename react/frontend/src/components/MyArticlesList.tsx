@@ -5,7 +5,6 @@ import { fetchArticle } from "../features/articleSlice";
 import ArticleCard from "./ArticleCard";
 import { Spinner, Alert, Col, Row } from "react-bootstrap";
 import { Article } from "../types/Article.type";
-import ArticleDetailsCanvas from "./ArticleDetailsCanvas";
 
 const MyArticlesList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,12 +38,6 @@ const MyArticlesList = () => {
           </Col>
         ))}
       </Row>
-
-      <ArticleDetailsCanvas
-        show={showDetails}
-        onHide={() => setShowDetails(false)}
-        article={selectedArticle}
-      />
     </>
   );
 };

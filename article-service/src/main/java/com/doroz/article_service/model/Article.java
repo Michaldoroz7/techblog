@@ -39,6 +39,8 @@ public class Article {
     @ElementCollection
     private List<Long> commentIds = new ArrayList<>();
 
+    private Long views;
+
     public static Article mapRequestToArticle(ArticleRequest request) {
         return Article.builder()
                 .title(request.getTitle())

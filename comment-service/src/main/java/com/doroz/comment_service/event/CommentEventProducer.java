@@ -13,11 +13,11 @@ public class CommentEventProducer {
 
     public void sendCreate(CommentEvent event) {
         kafkaTemplate.send("comment.created", event);
-        System.out.println("[KafkaProduced] Sent: " + event);
+        System.out.println("[KafkaProducer] Sent: " + event);
     }
 
     public void sendDelete(CommentEvent event) {
         kafkaTemplate.send("comment.deleted", event);
-        System.out.println("[KafkaProduced] Sent:" + event);
+        System.out.println("[KafkaProducer] Sent:" + event);
     }
 }
