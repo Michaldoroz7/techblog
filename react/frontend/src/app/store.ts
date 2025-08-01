@@ -4,6 +4,7 @@ import quoteSlice from '../features/quoteSlice';
 import userSlice from '../features/auth/userSlice';
 import articleSlice from '../features/articleSlice';
 import commentSlice from '../features/commentSlice';
+import statisticsSlice from '../features/statisticsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     quote: quoteSlice,
     user: userSlice,
     article: articleSlice,
-    comment: commentSlice
+    comment: commentSlice,
+    statistics: statisticsSlice,
   },
 });
 

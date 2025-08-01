@@ -6,10 +6,7 @@ const UserProfilePage = () => {
   return (
     <Container>
       <Row className="my-4">
-        <Col md={8}>
-          <UserInfoCard />
-        </Col>
-        <Col md={4}>
+        <Col>
           <UserInfoCard />
         </Col>
       </Row>

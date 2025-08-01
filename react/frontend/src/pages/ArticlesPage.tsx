@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { fetchAllArticles } from "../features/articleSlice";
-import { Row, Col, Spinner, Alert, Button } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types/Article.type";
 import ArticleDetails from "../components/ArticleDetails";
@@ -18,6 +18,7 @@ const ArticlesPage = () => {
 
   useEffect(() => {
     dispatch(fetchAllArticles());
+    
   }, [dispatch]);
 
 

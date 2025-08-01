@@ -12,11 +12,11 @@ const Sidebar = () => {
         <NavLink to="/dashboard/articles" className="nav-link text-white">
           📰 Artykuły
         </NavLink>
-        <NavLink to="/dashboard/comments" className="nav-link text-white">
-          💬 Komentarze
-        </NavLink>
         <NavLink to="/dashboard/profile" className="nav-link text-white">
           💬 Mój Profil
+        </NavLink>
+        <NavLink to="/dashboard/statistics" className="nav-link text-white">
+          📊 Statystyki
         </NavLink>
       </Nav>
     </>

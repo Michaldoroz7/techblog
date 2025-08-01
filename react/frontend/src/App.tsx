@@ -10,6 +10,7 @@ import DashboardHome from "./pages/DashboardHome";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import UserProfile from "./pages/UserProfilePage";
 import ArticlesPage from "./pages/ArticlesPage";
+import StatisticsPage from "./pages/StatisticsPage";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route index element={<DashboardHome />} />
           <Route path="profile" element={<UserProfile />} />
           <Route path="articles" element={<ArticlesPage />} />
+          <Route path="statistics" element={<StatisticsPage />} />
         </Route>
       </Routes>
     </Router>
