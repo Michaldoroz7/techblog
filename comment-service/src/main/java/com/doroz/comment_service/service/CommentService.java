@@ -44,6 +44,12 @@ public class CommentService {
         return toDto(saved);
     }
 
+    public List<CommentResponse> getAllComments() {
+        return repository.findAll().stream()
+                .map(this::toDto)
+                .toList();
+    }
+
     public List<CommentResponse> getByArticle(Long articleId) {
         return repository.findByArticleId(articleId)
                 .stream()

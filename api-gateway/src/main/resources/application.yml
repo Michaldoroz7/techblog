@@ -27,6 +27,12 @@ spring:
           uri: lb://comment-service
           predicates:
             - Path=/comment-service/**
+              
+        - id: statistics-service
+          uri: lb://statistics-service
+          predicates:
+            - Path=/statistics-service/**
+
 
 eureka:
   client:

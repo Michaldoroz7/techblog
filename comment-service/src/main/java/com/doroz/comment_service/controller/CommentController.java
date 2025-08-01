@@ -20,6 +20,11 @@ public class CommentController {
         this.service = service;
     }
 
+    @GetMapping
+    public ResponseEntity<List<CommentResponse>> getAllComments() {
+        return ResponseEntity.ok(service.getAllComments());
+    }
+
     @PostMapping
     public ResponseEntity<CommentResponse> create(@Valid @RequestBody CommentRequest request, @RequestHeader("X-Username") String username) {
         return ResponseEntity.ok(service.create(request, username));
