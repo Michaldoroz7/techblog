@@ -21,7 +21,7 @@ public class CommentEventListener {
     @KafkaListener(topics = "comment.created", groupId = "article-service-group")
     public void handleCreate(CommentEvent event) {
         Optional<Article> optionalArticle = articleRepository.findById(event.getArticleId());
-        if (!optionalArticle.isPresent()) {
+        if (optionalArticle.isEmpty()) {
             System.out.println("Article not found: " + event.getArticleId());
             return;
         }
@@ -43,7 +43,7 @@ public class CommentEventListener {
     @KafkaListener(topics = "comment.deleted", groupId = "article-service-group")
     public void handleDelete(CommentEvent event) {
         Optional<Article> optionalArticle = articleRepository.findById(event.getArticleId());
-        if (!optionalArticle.isPresent()) {
+        if (optionalArticle.isEmpty()) {
             System.out.println("Article not found: " + event.getArticleId());
             return;
         }
