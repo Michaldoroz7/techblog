@@ -1,10 +1,12 @@
 package com.doroz.article_service.service;
 
+import com.doroz.article_service.event.ArticleActivityType;
 import com.doroz.article_service.event.ArticleEventProducer;
 import com.doroz.article_service.model.Article;
 import com.doroz.article_service.model.ArticleRequest;
 import com.doroz.article_service.model.ArticleResponse;
 import com.doroz.article_service.repository.ArticleRepository;
+import com.doroz.events.ActivityEvent;
 import com.doroz.events.ArticleViewsEvent;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -32,7 +34,12 @@ public class ArticleService {
         article.setCreatedAt(Instant.now());
         article.setCommentIds(new ArrayList<>());
         article.setViews(0L);
-        articleRepository.save(article);
+        Article saved = articleRepository.save(article);
+
+        ActivityEvent activityEvent = new ActivityEvent(
+                authorUsername, ArticleActivityType.CREATED.getLabel(), "Article", saved.getId(), "Article was created", Instant.now());
+        producer.sendActivity(activityEvent);
+
         return Optional.of(ArticleResponse.mapArticleToResponse(article));
     }
 

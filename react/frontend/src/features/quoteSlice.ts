@@ -22,7 +22,7 @@ const initialState: QuoteState = {
 export const fetchQuote = createAsyncThunk('quote/fetchQuote', async (_, thunkAPI) => {
   try {
     const response = await axios.get('https://api.quotable.io/quotes/random?tags=technology');
-    const data = await response.data[0];
+    const data = await response.data;
     return data;
   } catch (err) {
     return thunkAPI.rejectWithValue('Nie udało się pobrać cytatu.');

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
 
 const QuoteCard = () => {
+  
   const { quote, loading, error } = useSelector(
     (state: RootState) => state.quote
   );

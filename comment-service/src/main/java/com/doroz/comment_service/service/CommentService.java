@@ -1,14 +1,17 @@
 package com.doroz.comment_service.service;
 
+import com.doroz.comment_service.event.CommentActivityType;
 import com.doroz.comment_service.event.CommentEventProducer;
 import com.doroz.comment_service.model.Comment;
 import com.doroz.comment_service.model.CommentIdsRequest;
 import com.doroz.comment_service.model.CommentRequest;
 import com.doroz.comment_service.model.CommentResponse;
 import com.doroz.comment_service.repository.CommentRepository;
+import com.doroz.events.ActivityEvent;
 import com.doroz.events.CommentEvent;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +43,13 @@ public class CommentService {
                 .commentId(saved.getId())
                 .build();
 
+        ActivityEvent activityEvent = new ActivityEvent(
+                username, "Comment", CommentActivityType.CREATED.getLabel(), saved.getId(), "Comment was created", Instant.now()
+        );
+
         producer.sendCreate(event);
+        producer.sendActivity(activityEvent);
+
         return toDto(saved);
     }
 
@@ -79,7 +88,12 @@ public class CommentService {
                 .commentId(comment.get().getId())
                 .build();
 
+        ActivityEvent activityEvent = new ActivityEvent(
+                username, "Comment", CommentActivityType.DELETED.getLabel(), commentId, "Comment was created", Instant.now()
+        );
+
         producer.sendDelete(event);
+        producer.sendActivity(activityEvent);
 
         repository.deleteById(commentId);
         return "Comment successfuly deleted";

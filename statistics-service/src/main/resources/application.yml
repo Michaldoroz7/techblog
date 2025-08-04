@@ -5,6 +5,15 @@ spring:
   application:
     name: statistics-service
 
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    properties:
+      spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+      spring.json.trusted.packages: com.doroz.events
+
 eureka:
   client:
     service-url:
@@ -15,5 +24,4 @@ feign:
     config:
       default:
         request-interceptors:
-          - com.doroz.statistics.interceptor.FeignAuthInterceptor
-
+          - com.doroz.statistics_service.client.FeignAuthInterceptor
