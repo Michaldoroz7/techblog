@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StatisticsService {
@@ -25,19 +26,19 @@ public class StatisticsService {
         this.userClient = userClient;
     }
 
-    public StatisticsResponse getStatistics() {
+    public Optional<StatisticsResponse> getStatistics() {
         List<ArticleDto> articles = articleClient.findAll();
         List<CommentDto> comments = commentClient.findAll();
         List<UserDto> users = userClient.findAll();
 
-        return new StatisticsResponse(
+        return Optional.of(new StatisticsResponse(
                 articles.size(),
                 comments.size(),
                 users.size(),
                 articles.stream().max(Comparator.comparing(ArticleDto::getCreatedAt)).orElse(null),
                 comments.stream().max(Comparator.comparing(CommentDto::getCreatedAt)).orElse(null),
                 users.stream().max(Comparator.comparing(UserDto::getCreatedAt)).orElse(null)
-        );
+        ));
     }
 }
 

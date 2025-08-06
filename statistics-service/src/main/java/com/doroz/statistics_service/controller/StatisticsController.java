@@ -22,7 +22,7 @@ public class StatisticsController {
 
     @GetMapping
     public ResponseEntity<StatisticsResponse> get() {
-        return ResponseEntity.ok(statisticsService.getStatistics());
+        return ResponseEntity.of(statisticsService.getStatistics());
     }
 
     @GetMapping("/activity")

@@ -28,7 +28,6 @@ public class UserService implements UserDetailsService {
         this.encoder = encoder;
     }
 
-
     public Optional<UserResponse> registerUser(UserRequest userRequest) {
         User user = User.mapRequestToUser(userRequest);
         user.setPassword(encoder.encode(userRequest.getPassword()));

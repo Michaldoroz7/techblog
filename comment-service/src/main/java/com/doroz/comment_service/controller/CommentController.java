@@ -22,22 +22,22 @@ public class CommentController {
 
     @GetMapping
     public ResponseEntity<List<CommentResponse>> getAllComments() {
-        return ResponseEntity.ok(service.getAllComments());
+        return ResponseEntity.of(service.getAllComments());
     }
 
     @PostMapping
     public ResponseEntity<CommentResponse> create(@Valid @RequestBody CommentRequest request, @RequestHeader("X-Username") String username) {
-        return ResponseEntity.ok(service.create(request, username));
+        return ResponseEntity.of(service.create(request, username));
     }
 
     @GetMapping("/article/{articleId}")
     public ResponseEntity<List<CommentResponse>> getByArticle(@PathVariable Long articleId) {
-        return ResponseEntity.ok(service.getByArticle(articleId));
+        return ResponseEntity.of(service.getByArticle(articleId));
     }
 
     @PostMapping("/article/by-ids")
     public ResponseEntity<List<CommentResponse>> getByIds(@RequestBody CommentIdsRequest commentIdsRequest) {
-        return ResponseEntity.ok(service.getByIds(commentIdsRequest));
+        return ResponseEntity.of(service.getByIds(commentIdsRequest));
     }
 
     @DeleteMapping("/{id}")

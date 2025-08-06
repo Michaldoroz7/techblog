@@ -28,7 +28,7 @@ public class CommentService {
         this.producer = producer;
     }
 
-    public CommentResponse create(CommentRequest request, String username) {
+    public Optional<CommentResponse> create(CommentRequest request, String username) {
         Comment comment = Comment.builder()
                 .articleId(request.articleId())
                 .content(request.content())
@@ -50,26 +50,26 @@ public class CommentService {
         producer.sendCreate(event);
         producer.sendActivity(activityEvent);
 
-        return toDto(saved);
+        return Optional.of(toDto(saved));
     }
 
-    public List<CommentResponse> getAllComments() {
-        return repository.findAll().stream()
+    public Optional<List<CommentResponse>> getAllComments() {
+        return Optional.of(repository.findAll().stream()
                 .map(this::toDto)
-                .toList();
+                .toList());
     }
 
-    public List<CommentResponse> getByArticle(Long articleId) {
-        return repository.findByArticleId(articleId)
+    public Optional<List<CommentResponse>> getByArticle(Long articleId) {
+        return Optional.of(repository.findByArticleId(articleId)
                 .stream()
                 .map(this::toDto)
-                .toList();
+                .toList());
     }
 
-    public List<CommentResponse> getByIds(CommentIdsRequest commentIdsRequest) {
-        return repository.findAllById(commentIdsRequest.getIds()).stream()
+    public Optional<List<CommentResponse>> getByIds(CommentIdsRequest commentIdsRequest) {
+        return Optional.of(repository.findAllById(commentIdsRequest.getIds()).stream()
                 .map(this::toDto)
-                .toList();
+                .toList());
     }
 
     public String deleteComment(Long commentId, String username) {

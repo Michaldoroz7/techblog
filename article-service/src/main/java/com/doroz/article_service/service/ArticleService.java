@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+
     private final ArticleEventProducer producer;
 
     public ArticleService(ArticleRepository articleRepository, ArticleEventProducer producer) {
