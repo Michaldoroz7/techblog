@@ -1,10 +1,13 @@
 package com.doroz.auth_service.service;
 
+import com.doroz.auth_service.event.UserActivityType;
+import com.doroz.auth_service.event.UserEventProducer;
 import com.doroz.auth_service.model.Role;
 import com.doroz.auth_service.model.User;
 import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
 import com.doroz.auth_service.repository.UserRepository;
+import com.doroz.events.UserEvent;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +25,8 @@ public class UserService implements UserDetailsService {
 
     private PasswordEncoder encoder;
 
+    private UserEventProducer producer;
+
 
     public UserService(UserRepository userRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
@@ -33,7 +38,12 @@ public class UserService implements UserDetailsService {
         user.setPassword(encoder.encode(userRequest.getPassword()));
         user.setCreatedAt(Instant.now());
         user.setRole(Role.USER);
-        userRepository.save(user);
+        User saved = userRepository.save(user);
+
+
+        UserEvent userActivity = new UserEvent(
+                user.getUsername(), UserActivityType.CREATED.getLabel(), "Auth", saved.getId(), "User was created", Instant.now());
+        producer.sendActivity(userActivity);
         return Optional.of(UserResponse.mapUserToResponse(user));
     }
 
