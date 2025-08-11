@@ -1,13 +1,11 @@
 import React from 'react';
-import QuoteCard from '../components/QuoteCard';
-import ActivityCard from '../components/ActivityCard';
+import ActivityCard from '../components/article/ActivityCard';
 
 const DashboardHome = () => {
   return (
     <>
       <ActivityCard />
       <br/>
-      <QuoteCard />
     </>
   );
 };

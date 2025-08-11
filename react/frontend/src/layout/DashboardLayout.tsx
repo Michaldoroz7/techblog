@@ -1,7 +1,6 @@
-import { Container, Row, Col } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import Sidebar from "../components/navigation/Sidebar";
+import Topbar from "../components/navigation/Topbar";
 
 const DashboardLayout = () => {
   return (

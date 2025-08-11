@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../app/store";
 import { fetchAllArticles } from "../features/articleSlice";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import ArticleCard from "../components/ArticleCard";
 import { Article } from "../types/Article.type";
-import ArticleDetails from "../components/ArticleDetails";
-import AddArticleOffcanvas from "../components/AddArticleCanvas";
 import { AnimatePresence, motion } from "framer-motion";
+import AddArticleOffcanvas from "../components/article/AddArticleCanvas";
+import ArticleCard from "../components/article/ArticleCard";
+import ArticleDetails from "../components/article/ArticleDetails";
 
 const ArticlesPage = () => {
   const dispatch = useDispatch<AppDispatch>();

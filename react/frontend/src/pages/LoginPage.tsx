@@ -4,8 +4,6 @@ import {
   Button,
   Card,
   Container,
-  Row,
-  Col,
   Alert,
   Spinner,
 } from "react-bootstrap";
@@ -16,7 +14,7 @@ import { login } from "../features/auth/authSlice";
 const LoginPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error, token, justLoggedIn } = useAppSelector(
+  const { loading, error, justLoggedIn } = useAppSelector(
     (state) => state.auth
   );
 

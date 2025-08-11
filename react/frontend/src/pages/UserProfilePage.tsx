@@ -1,6 +1,6 @@
 import { Col, Container, Row } from "react-bootstrap";
-import UserInfoCard from "../components/UserInfoCard";
-import MyArticlesList from "../components/MyArticlesList";
+import MyArticlesList from "../components/user/MyArticlesList";
+import UserInfoCard from "../components/user/UserInfoCard";
 
 const UserProfilePage = () => {
   return (
