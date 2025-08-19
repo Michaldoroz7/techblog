@@ -28,7 +28,8 @@ public class UserService implements UserDetailsService {
     private UserEventProducer producer;
 
 
-    public UserService(UserRepository userRepository, PasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder encoder, UserEventProducer producer) {
+        this.producer = producer;
         this.userRepository = userRepository;
         this.encoder = encoder;
     }
