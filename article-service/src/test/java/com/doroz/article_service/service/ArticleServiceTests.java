@@ -40,9 +40,7 @@ public class ArticleServiceTests {
     @Test
     void shouldCreateArticle() {
         // given
-        ArticleRequest request = new ArticleRequest();
-        request.setTitle("Test title");
-        request.setContent("Test content");
+        ArticleRequest request = new ArticleRequest("Test author", "Test title", "Test summary", "Test content", "Test category", Instant.now());
 
         Article savedArticle = Article.mapRequestToArticle(request);
         savedArticle.setId(1L);
@@ -58,7 +56,7 @@ public class ArticleServiceTests {
 
         // then
         assertTrue(result.isPresent());
-        assertEquals("Test title", result.get().getTitle());
+        assertEquals("Test title", result.get().title());
         verify(producer, times(1)).sendActivity(any(ActivityEvent.class));
     }
 
@@ -87,7 +85,7 @@ public class ArticleServiceTests {
 
         // then
         assertTrue(result.isPresent());
-        assertEquals("Article 0", result.get().getTitle());
+        assertEquals("Article 0", result.get().title());
         verify(producer, times(1)).sendViews(any(ArticleViewsEvent.class));
     }
 

@@ -40,7 +40,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
 
         UserDetails user = (UserDetails) auth.getPrincipal();
         String token = jwtUtils.generateToken(user);
@@ -56,7 +56,12 @@ public class UserController {
         System.out.println("Użytkownik wywołał /me jako: " + authentication.getName());
 
         return ResponseEntity.of(userService.getByUsername(authentication.getName())
-                .map(UserResponse::mapUserToResponse));
+                .map(user -> new UserResponse(
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getCreatedAt(),
+                        user.getRole()
+                )));
     }
 
     @GetMapping

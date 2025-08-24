@@ -67,7 +67,7 @@ public class CommentService {
     }
 
     public Optional<List<CommentResponse>> getByIds(CommentIdsRequest commentIdsRequest) {
-        return Optional.of(repository.findAllById(commentIdsRequest.getIds()).stream()
+        return Optional.of(repository.findAllById(commentIdsRequest.ids()).stream()
                 .map(this::toDto)
                 .toList());
     }

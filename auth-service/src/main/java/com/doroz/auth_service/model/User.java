@@ -43,11 +43,11 @@ public class User implements UserDetails {
 
     public static User mapRequestToUser(UserRequest userRequest) {
         return User.builder()
-                .username(userRequest.getUsername())
-                .email(userRequest.getEmail())
-                .password(userRequest.getPassword())
-                .createdAt(userRequest.getCreatedAt())
-                .role(userRequest.getRole())
+                .username(userRequest.username())
+                .email(userRequest.email())
+                .password(userRequest.password())
+                .createdAt(userRequest.createdAt())
+                .role(userRequest.role())
                 .build();
     }
 
@@ -58,7 +58,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // lub wartość z pola jeśli masz
+        return true;
     }
 
     @Override

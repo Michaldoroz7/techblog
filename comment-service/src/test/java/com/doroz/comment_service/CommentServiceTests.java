@@ -110,8 +110,7 @@ public class CommentServiceTests {
         when(commentRepository.findAllById(any())).thenReturn(comments.subList(0, 2));
 
         // when
-        CommentIdsRequest request = new CommentIdsRequest();
-        request.setIds(List.of(1L, 2L));
+        CommentIdsRequest request = new CommentIdsRequest(List.of(1L, 2L));
         List<CommentResponse> result = service.getByIds(request).get();
 
         // then

@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
 
     public Optional<UserResponse> registerUser(UserRequest userRequest) {
         User user = User.mapRequestToUser(userRequest);
-        user.setPassword(encoder.encode(userRequest.getPassword()));
+        user.setPassword(encoder.encode(userRequest.password()));
         user.setCreatedAt(Instant.now());
         user.setRole(Role.USER);
         User saved = userRepository.save(user);
@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         UserEvent userActivity = new UserEvent(
                 user.getUsername(), UserActivityType.CREATED.getLabel(), "Auth", saved.getId(), "User was created", Instant.now());
         producer.sendActivity(userActivity);
-        return Optional.of(UserResponse.mapUserToResponse(user));
+        return Optional.of(new UserResponse(saved.getUsername(), saved.getEmail(), saved.getCreatedAt(), saved.getRole()));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
 
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(UserResponse::mapUserToResponse)
+                .map(user -> new UserResponse(user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getRole()))
                 .toList();
     }
 

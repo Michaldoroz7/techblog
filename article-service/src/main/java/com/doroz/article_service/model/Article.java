@@ -43,11 +43,11 @@ public class Article {
 
     public static Article mapRequestToArticle(ArticleRequest request) {
         return Article.builder()
-                .title(request.getTitle())
-                .summary(request.getSummary())
-                .content(request.getContent())
-                .category(request.getCategory())
-                .createdAt(request.getCreatedAt())
+                .title(request.title())
+                .summary(request.summary())
+                .content(request.content())
+                .category(request.category())
+                .createdAt(request.createdAt())
                 .build();
     }
 }

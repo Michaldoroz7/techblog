@@ -41,12 +41,12 @@ public class ArticleService {
                 authorUsername, ArticleActivityType.CREATED.getLabel(), "Article", saved.getId(), "Article was created", Instant.now());
         producer.sendActivity(activityEvent);
 
-        return Optional.of(ArticleResponse.mapArticleToResponse(article));
+        return Optional.of(new ArticleResponse(saved.getId(), saved.getTitle(), saved.getSummary(), saved.getContent(), saved.getCategory(), saved.getAuthorName(), saved.getCreatedAt(), saved.getCommentIds(), saved.getViews()));
     }
 
     public Optional<List<ArticleResponse>> getAllArticles() {
         return Optional.of(articleRepository.findAll().stream()
-                .map(ArticleResponse::mapArticleToResponse)
+                .map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getSummary(), article.getContent(), article.getCategory(), article.getAuthorName(), article.getCreatedAt(), article.getCommentIds(), article.getViews()))
                 .collect(Collectors.toList()));
     }
 
@@ -59,7 +59,7 @@ public class ArticleService {
 
         Optional<Article> articleResponse = articleRepository.findById(id);
 
-        return articleResponse.map(ArticleResponse::mapArticleToResponse);
+        return articleResponse.map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getSummary(), article.getContent(), article.getCategory(), article.getAuthorName(), article.getCreatedAt(), article.getCommentIds(), article.getViews()));
 
     }
 
@@ -72,7 +72,7 @@ public class ArticleService {
     public List<ArticleResponse> getArticlesByAuthor(String authorUsername) {
         List<Article> articles = articleRepository.findByAuthorName(authorUsername);
         return articles.stream()
-                .map(ArticleResponse::mapArticleToResponse)
+                .map(article -> new ArticleResponse(article.getId(), article.getTitle(), article.getSummary(), article.getContent(), article.getCategory(), article.getAuthorName(), article.getCreatedAt(), article.getCommentIds(), article.getViews()))
                 .collect(Collectors.toList());
     }
 

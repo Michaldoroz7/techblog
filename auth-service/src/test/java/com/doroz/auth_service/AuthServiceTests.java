@@ -1,5 +1,7 @@
 package com.doroz.auth_service;
 
+import com.doroz.auth_service.event.UserEventProducer;
+import com.doroz.auth_service.model.Role;
 import com.doroz.auth_service.model.User;
 import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
@@ -34,6 +36,9 @@ public class AuthServiceTests {
     private UserService userService;
 
     @Mock
+    private UserEventProducer producer;
+
+    @Mock
     private UserDetailsService userDetailsService;
 
     @BeforeEach
@@ -45,17 +50,13 @@ public class AuthServiceTests {
     void shouldRegisterUser() {
 
         // given
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUsername("michaldoroz");
-        userRequest.setPassword("password");
-        userRequest.setEmail("email@email.com");
-        userRequest.setCreatedAt(Instant.now());
+        UserRequest userRequest = new UserRequest("michaldoroz", "email@email.com", "password", Instant.now(), Role.USER);
 
         User user = User.mapRequestToUser(userRequest);
 
-        when(repository.existsByUsername(userRequest.getUsername())).thenReturn(false);
-        when(encoder.encode(userRequest.getPassword())).thenReturn("encodedPassword");
-        when(userDetailsService.loadUserByUsername(userRequest.getUsername())).thenReturn(null);
+        when(repository.existsByUsername(userRequest.username())).thenReturn(false);
+        when(encoder.encode(userRequest.password())).thenReturn("encodedPassword");
+        when(userDetailsService.loadUserByUsername(userRequest.username())).thenReturn(null);
         when(repository.save(any(User.class))).thenReturn(user);
 
         // when
@@ -63,8 +64,8 @@ public class AuthServiceTests {
 
         // then
         assertTrue(result.isPresent());
-        assertEquals("michaldoroz", result.get().getUsername());
-        assertEquals("email@email.com", result.get().getEmail());
+        assertEquals("michaldoroz", result.get().username());
+        assertEquals("email@email.com", result.get().email());
     }
 
     @Test
@@ -97,7 +98,7 @@ public class AuthServiceTests {
         List<UserResponse> result = userService.getAllUsers();
 
         // then
-        assertTrue(result.getFirst().getUsername().equals("michaldoroz"));
+        assertTrue(result.getFirst().username().equals("michaldoroz"));
         assertEquals(1, result.size());
     }
 

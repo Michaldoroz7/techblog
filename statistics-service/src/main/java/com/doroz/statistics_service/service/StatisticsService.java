@@ -35,9 +35,9 @@ public class StatisticsService {
                 articles.size(),
                 comments.size(),
                 users.size(),
-                articles.stream().max(Comparator.comparing(ArticleDto::getCreatedAt)).orElse(null),
-                comments.stream().max(Comparator.comparing(CommentDto::getCreatedAt)).orElse(null),
-                users.stream().max(Comparator.comparing(UserDto::getCreatedAt)).orElse(null)
+                articles.stream().max(Comparator.comparing(ArticleDto::createdAt)).orElse(null),
+                comments.stream().max(Comparator.comparing(CommentDto::createdAt)).orElse(null),
+                users.stream().max(Comparator.comparing(UserDto::createdAt)).orElse(null)
         ));
     }
 }

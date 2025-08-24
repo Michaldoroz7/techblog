@@ -1,14 +1,12 @@
 package com.doroz.comment_service.model;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
-public class CommentIdsRequest {
+public record CommentIdsRequest(
+        @NotNull
+        List<Long> ids) {
 
-    @NotNull
-    private List<Long> ids;
 }
 
