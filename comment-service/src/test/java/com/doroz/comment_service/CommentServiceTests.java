@@ -94,7 +94,12 @@ public class CommentServiceTests {
     @Test
     void shouldDeleteComment() {
         // given
-        when(commentRepository.findById(1L)).thenReturn(Optional.of(new Comment()));
+        List<Comment> comments = generateComments();
+        when(commentRepository.findAll()).thenReturn(comments);
+        System.out.println("Comments:" + commentRepository.findAll());
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(
+                Comment.builder().id(1L).authorUsername("michaldoroz").build()
+        ));
 
         // when
         String result = service.deleteComment(1L, "michaldoroz");
@@ -115,7 +120,7 @@ public class CommentServiceTests {
 
         // then
         assertEquals(2, result.size());
-        assertEquals("Comment 0", result.get(0).content());
+        assertEquals("Comment 0", result.getFirst().content());
     }
 
 

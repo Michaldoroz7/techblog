@@ -31,7 +31,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     String email;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     String password;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -75,4 +75,16 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+
 }

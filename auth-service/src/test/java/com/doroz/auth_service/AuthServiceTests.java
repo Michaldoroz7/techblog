@@ -7,6 +7,7 @@ import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
 import com.doroz.auth_service.repository.UserRepository;
 import com.doroz.auth_service.service.UserService;
+import com.doroz.events.UserEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -40,6 +41,9 @@ public class AuthServiceTests {
 
     @Mock
     private UserDetailsService userDetailsService;
+
+    @Mock
+    private UserEvent userEvent;
 
     @BeforeEach
     void setUp() {
