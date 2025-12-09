@@ -26,37 +26,34 @@ public class GlobalExceptionHandler {
                 errors.put(error.getField(), error.getDefaultMessage())
         );
 
-        ErrorResponse response = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
+        ErrorResponse response = buildResponse(
+                HttpStatus.BAD_REQUEST,
                 ErrorMessages.VALIDATION_FAILED,
                 request.getRequestURI(),
                 errors
         );
 
-        log.warn("Validation error occured: {}", errors);
+        log.warn("Validation error occurred: {}", errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponse> hadleEntityNotFound(EntityNotFoundException ex, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.NOT_FOUND.value(),
+    public ResponseEntity<ErrorResponse> handleEntityNotFound(EntityNotFoundException ex, HttpServletRequest request) {
+        ErrorResponse response = buildResponse(
+                HttpStatus.NOT_FOUND,
                 ErrorMessages.RESOURCE_NOT_FOUND,
                 request.getRequestURI(),
                 null
         );
 
-        log.warn("Resouce not found: {}", ex.getMessage());
+        log.warn("Resource not found: {}", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.CONFLICT.value(),
+        ErrorResponse response = buildResponse(
+                HttpStatus.CONFLICT,
                 ErrorMessages.DATA_INTEGRITY_VIOLATION,
                 request.getRequestURI(),
                 null
@@ -68,15 +65,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+        ErrorResponse response = buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
                 ErrorMessages.INTERNAL_SERVER_ERROR,
                 request.getRequestURI(),
                 null
         );
 
-        log.warn("Unhadled exception: {}", ex.getMessage());
+        log.error("Unhandled exception", ex);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private ErrorResponse buildResponse(HttpStatus status, String message, String path, Map<String, String> details) {
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                status.value(),
+                message,
+                path,
+                details
+        );
     }
 }

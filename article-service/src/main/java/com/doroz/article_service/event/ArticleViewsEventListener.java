@@ -14,9 +14,6 @@ public class ArticleViewsEventListener {
 
     @KafkaListener(topics = "article.views", groupId = "article-service-group")
     public void handleArticleView(ArticleViewsEvent event) {
-        articleRepository.findById(event.getArticleId()).ifPresent(article -> {
-            article.setViews(article.getViews() + 1);
-            articleRepository.save(article);
-        });
+        articleRepository.incrementViewsById(event.getArticleId());
     }
 }

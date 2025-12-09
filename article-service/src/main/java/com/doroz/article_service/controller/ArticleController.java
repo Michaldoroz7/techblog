@@ -4,6 +4,7 @@ import com.doroz.article_service.model.ArticleRequest;
 import com.doroz.article_service.model.ArticleResponse;
 import com.doroz.article_service.service.ArticleService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +24,17 @@ public class ArticleController {
     public ResponseEntity<ArticleResponse> createArticle(@Valid @RequestBody ArticleRequest articleRequest,
                                                          @RequestHeader(value = "X-Username", required = false) String username) {
 
-        return ResponseEntity.of(articleService.createArticle(articleRequest, username));
+        return ResponseEntity.status(HttpStatus.CREATED).body(articleService.createArticle(articleRequest, username));
     }
 
     @GetMapping
     public ResponseEntity<List<ArticleResponse>> getAllArticles() {
-        return ResponseEntity.of(articleService.getAllArticles());
+        return ResponseEntity.ok(articleService.getAllArticles());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ArticleResponse> getById(@PathVariable("id") Long id) {
-        return ResponseEntity.of(articleService.getArticleById(id));
+        return ResponseEntity.ok(articleService.getArticleById(id));
     }
 
     @DeleteMapping("/{id}")

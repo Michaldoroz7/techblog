@@ -9,16 +9,16 @@ import com.doroz.events.ActivityEvent;
 import com.doroz.events.ArticleViewsEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ArticleServiceTests {
@@ -52,11 +52,10 @@ public class ArticleServiceTests {
         when(repository.save(any(Article.class))).thenReturn(savedArticle);
 
         // when
-        Optional<ArticleResponse> result = service.createArticle(request, "michaldoroz");
+        ArticleResponse result = service.createArticle(request, "michaldoroz");
 
         // then
-        assertTrue(result.isPresent());
-        assertEquals("Test title", result.get().title());
+        assertEquals("Test title", result.title());
         verify(producer, times(1)).sendActivity(any(ActivityEvent.class));
     }
 
@@ -67,11 +66,10 @@ public class ArticleServiceTests {
         when(repository.findAll()).thenReturn(articles);
 
         // when
-        Optional<List<ArticleResponse>> result = service.getAllArticles();
+        List<ArticleResponse> result = service.getAllArticles();
 
         // then
-        assertTrue(result.isPresent());
-        assertEquals(10, result.get().size());
+        assertEquals(10, result.size());
     }
 
     @Test
@@ -81,24 +79,24 @@ public class ArticleServiceTests {
         when(repository.findById(1L)).thenReturn(Optional.of(articles.getFirst()));
 
         // when
-        Optional<ArticleResponse> result = service.getArticleById(1L);
+        ArticleResponse result = service.getArticleById(1L);
 
         // then
-        assertTrue(result.isPresent());
-        assertEquals("Article 0", result.get().title());
+        assertEquals("Article 0", result.title());
         verify(producer, times(1)).sendViews(any(ArticleViewsEvent.class));
     }
 
     @Test
     void shouldDeleteArticle() {
         // given
-        when(repository.findById(1L)).thenReturn(Optional.of(new Article()));
+        when(repository.existsById(1L)).thenReturn(true);
 
         // when
         String result = service.deleteArticle(1L);
 
         // then
         assertEquals("Article successfully deleted", result);
+        verify(repository).deleteById(1L);
     }
 
     @Test

@@ -73,12 +73,13 @@ public class ArticleService {
         return toResponse(article);
     }
 
-    public void deleteArticle(Long id) {
+    public String deleteArticle(Long id) {
         if (!articleRepository.existsById(id)) {
             throw new EntityNotFoundException("Article not found with id: " + id);
         }
         articleRepository.deleteById(id);
         log.info("Article deleted id={}", id);
+        return "Article successfully deleted";
     }
 
     @Transactional
