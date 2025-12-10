@@ -7,6 +7,7 @@ import com.doroz.auth_service.model.UserRequest;
 import com.doroz.auth_service.model.UserResponse;
 import com.doroz.auth_service.service.UserService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class UserController {
 
     private UserService userService;
@@ -53,7 +55,7 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        System.out.println("Użytkownik wywołał /me jako: " + authentication.getName());
+        log.info("Użytkownik wywołał /me jako: {}", authentication.getName());
 
         return ResponseEntity.of(userService.getByUsername(authentication.getName())
                 .map(user -> new UserResponse(

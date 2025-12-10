@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         UserEvent userActivity = new UserEvent(
                 user.getUsername(), UserActivityType.CREATED.getLabel(), "Auth", saved.getId(), "User was created", Instant.now());
         producer.sendActivity(userActivity);
-        return Optional.of(new UserResponse(saved.getUsername(), saved.getEmail(), saved.getCreatedAt(), saved.getRole()));
+        return Optional.of(toResponse(user));
     }
 
     @Override
@@ -60,8 +60,17 @@ public class UserService implements UserDetailsService {
 
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserResponse(user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getRole()))
+                .map(this::toResponse)
                 .toList();
+    }
+
+    private UserResponse toResponse(User user) {
+        return new UserResponse(
+                user.getUsername(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getRole()
+        );
     }
 
 }

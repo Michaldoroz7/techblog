@@ -1,4 +1,4 @@
-package com.doroz.article_service.handler;
+package com.doroz.auth_service.handler;
 
 import java.time.LocalDateTime;
 import java.util.Map;
