@@ -1,11 +1,17 @@
-FROM techblog-builder AS techblog-builder
-
-FROM eclipse-temurin:21-jdk-alpine
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
-COPY --from=techblog-builder /app/comment-service/target/comment-service-0.0.1-SNAPSHOT.jar app.jar
+COPY . .
 
-EXPOSE 8081
+RUN mvn -B -pl comment-service -am package -DskipTests
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY --from=builder /app/comment-service/target/*jar app.jar
+
+EXPOSE 8083
+
+ENTRYPOINT ["java","-jar","app.jar"]

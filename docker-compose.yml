@@ -1,5 +1,10 @@
+version: "3.9"
+
 services:
 
+  # ===============================
+  # Discovery Server (Eureka)
+  # ===============================
   discovery-server:
     build:
       context: .
@@ -10,6 +15,9 @@ services:
     networks:
       - microservices-net
 
+  # ===============================
+  # API Gateway
+  # ===============================
   api-gateway:
     build:
       context: .
@@ -18,13 +26,17 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - discovery-server
+      discovery-server:
+        condition: service_started
     environment:
       JWT_SECRET: ${JWT_SECRET}
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-server:8761/eureka
     networks:
       - microservices-net
 
+  # ===============================
+  # Postgres – Auth
+  # ===============================
   postgres-auth:
     image: postgres:15
     container_name: postgres-auth
@@ -33,13 +45,19 @@ services:
       POSTGRES_DB: ${POSTGRES_AUTH_DB}
       POSTGRES_USER: ${POSTGRES_AUTH_USER}
       POSTGRES_PASSWORD: ${POSTGRES_AUTH_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - auth_pg_data:/var/lib/postgresql/data
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ===============================
+  # Postgres – Article
+  # ===============================
   postgres-article:
     image: postgres:15
     container_name: postgres-article
@@ -48,12 +66,19 @@ services:
       POSTGRES_DB: ${POSTGRES_ARTICLE_DB}
       POSTGRES_USER: ${POSTGRES_ARTICLE_USER}
       POSTGRES_PASSWORD: ${POSTGRES_ARTICLE_PASSWORD}
-
     volumes:
       - article_pg_data:/var/lib/postgresql/data
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ===============================
+  # Postgres – Comment
+  # ===============================
   postgres-comment:
     image: postgres:15
     container_name: postgres-comment
@@ -62,13 +87,19 @@ services:
       POSTGRES_DB: ${POSTGRES_COMMENT_DB}
       POSTGRES_USER: ${POSTGRES_COMMENT_USER}
       POSTGRES_PASSWORD: ${POSTGRES_COMMENT_PASSWORD}
-    ports:
-      - "5433:5432"
     volumes:
       - comment_pg_data:/var/lib/postgresql/data
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ===============================
+  # Auth Service
+  # ===============================
   auth-service:
     build:
       context: .
@@ -77,7 +108,10 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres-auth
+      postgres-auth:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/${POSTGRES_AUTH_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_AUTH_USER}
@@ -85,7 +119,11 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     networks:
       - microservices-net
+    restart: on-failure
 
+  # ===============================
+  # Article Service
+  # ===============================
   article-service:
     build:
       context: .
@@ -94,14 +132,25 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - postgres-article
+      postgres-article:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-article:5432/${POSTGRES_ARTICLE_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_ARTICLE_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_ARTICLE_PASSWORD}
     networks:
       - microservices-net
+    restart: on-failure
 
+  # ===============================
+  # Comment Service
+  # ===============================
   comment-service:
     build:
       context: .
@@ -110,31 +159,60 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - postgres-comment
+      postgres-comment:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-comment:5432/${POSTGRES_COMMENT_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_COMMENT_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGREs_COMMENT_PASSWORD}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_COMMENT_PASSWORD}
     networks:
       - microservices-net
+    restart: on-failure
 
+  # ===============================
+  # Statistics Service (Kafka)
+  # ===============================
   statistics-service:
     build:
       context: .
       dockerfile: statistics-service/Dockerfile
     container_name: statistics-service
     depends_on:
-      - postgres-comment
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
     networks:
       - microservices-net
+    restart: on-failure
 
+  # ===============================
+  # Zookeeper
+  # ===============================
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.1
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+      ZOO_JVMFLAGS: "-Xmx512m -Xms512m"
     networks:
       - microservices-net
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo srvr | nc localhost 2181 | grep Mode"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
 
+  # ===============================
+  # Kafka
+  # ===============================
   kafka:
     image: confluentinc/cp-kafka:7.5.1
     ports:
@@ -146,9 +224,15 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     networks:
       - microservices-net
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-topics --bootstrap-server localhost:29092 --list > /dev/null" ]
+      interval: 10s
+      timeout: 10s
+      retries: 20
 
 volumes:
   auth_pg_data:
